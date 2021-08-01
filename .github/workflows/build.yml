@@ -56,6 +56,7 @@ jobs:
         with:
           name: QMK-XAP_macOS.dmg.zip
           path: dist_electron/QMK XAP*.dmg
+          if-no-files-found: error
 
       - name: 'Upload Linux artifact'
         if: ${{ matrix.os == 'ubuntu-latest' }}
@@ -63,6 +64,7 @@ jobs:
         with:
           name: QMK-XAP_Linux.AppImage.zip
           path: dist_electron/QMK XAP*.AppImage
+          if-no-files-found: error
 
       - name: 'Upload Windows artifact'
         if: ${{ matrix.os == 'windows-latest' }}
@@ -70,3 +72,4 @@ jobs:
         with:
           name: QMK-XAP_Windows.exe.zip
           path: dist_electron/QMK XAP*.exe
+          if-no-files-found: error
