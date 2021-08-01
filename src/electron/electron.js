@@ -23,6 +23,10 @@ const isDev = process.env.IS_DEV == 'true' ? true : false;
 ///////////
 
 const hid_devices = HIDDevices.Create();
+app.on('will-quit', () => {
+  hid_devices.stop();
+});
+
 const hid_listen = HIDListen(hid_devices);
 
 hid_listen.on('connect', function (d) {
@@ -50,11 +54,6 @@ hid_listen.on('text', function (d, text) {
 ///////////
 // End crappy implementation of hid_listen
 ///////////
-
-function quit() {
-  hid_devices.stop();
-  app.quit();
-}
 
 function createWindow() {
   protocol.registerFileProtocol('app', (request, callback) => {
@@ -114,7 +113,7 @@ app.whenReady().then(() => {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    quit();
+    app.quit();
   }
 });
 
@@ -123,12 +122,12 @@ if (isDev) {
   if (process.platform === 'win32') {
     process.on('message', (data) => {
       if (data === 'graceful-exit') {
-        quit();
+        app.quit();
       }
     });
   } else {
     process.on('SIGTERM', () => {
-      quit();
+      app.quit();
     });
   }
 }

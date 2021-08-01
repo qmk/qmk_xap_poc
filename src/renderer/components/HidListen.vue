@@ -5,6 +5,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, onMounted } from 'vue';
 import { ITerminalOptions, Terminal } from 'xterm';
+import * as XtermWebfont from 'xterm-webfont';
 import 'xterm/css/xterm.css';
 import chalk from 'chalk';
 export default defineComponent({
@@ -19,6 +20,7 @@ export default defineComponent({
       fontSize: 12,
       lineHeight: 1.5,
     } as ITerminalOptions);
+    term.loadAddon(new XtermWebfont());
     const ctx = new chalk.Instance({ level: 2 });
     onMounted(() => {
       window.ipc.answerMain(
@@ -46,7 +48,7 @@ export default defineComponent({
       });
       const terminal = document.getElementById('terminal');
       if (terminal !== null) {
-        term.open(terminal);
+        term.loadWebfontAndOpen(terminal);
       }
     });
   },
