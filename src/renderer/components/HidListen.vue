@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, onMounted } from 'vue';
 import { ITerminalOptions, Terminal } from 'xterm';
-import * as XtermWebfont from 'xterm-webfont';
+import XtermWebfont from 'xterm-webfont';
 import { FitAddon } from 'xterm-addon-fit';
 import 'xterm/css/xterm.css';
 import chalk from 'chalk';
@@ -55,6 +55,7 @@ export default defineComponent({
         var tmp: any = term; // loadWebfontAndOpen doesn't exist on the interface
         tmp.loadWebfontAndOpen(terminal);
         window.addEventListener('resize', function () {
+          this.setTimeout(() => fitAddon.fit(), 10);
           fitAddon.fit();
         });
         fitAddon.fit();
