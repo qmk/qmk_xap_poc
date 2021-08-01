@@ -1,4 +1,3 @@
-const logger = require('pino');
 const EventEmitter = require('events').EventEmitter;
 const usbDetect = require('usb-detection');
 const HIDW = require('./node-hid-wrapper');
@@ -190,7 +189,7 @@ class HIDDeviceFilter extends EventEmitter {
           this.device_map.set(d.path, device);
         }
       } catch (e) {
-        logger.error(`Failed to open device at path ${d.path}`);
+        console.error(`Failed to open device at path ${d.path}`);
       }
     }
   }
