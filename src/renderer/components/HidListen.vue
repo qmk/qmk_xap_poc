@@ -15,6 +15,9 @@ export default defineComponent({
     const term = new Terminal({
       cols: 90,
       scrollback: 500,
+      fontFamily: 'Iosevka Fixed Web',
+      fontSize: 12,
+      lineHeight: 1.5,
     } as ITerminalOptions);
     const ctx = new chalk.Instance({ level: 2 });
     onMounted(() => {
@@ -39,12 +42,11 @@ export default defineComponent({
       window.ipc.answerMain('hid_listen-text', (event: HidListenTextEvent) => {
         console.log(event);
         const str = `${event.device.manufacturer} ${event.device.product}: ${event.text}`;
-        term.writeln(ctx`{blueBright ${str}}`);
+        term.writeln(str);
       });
       const terminal = document.getElementById('terminal');
       if (terminal !== null) {
         term.open(terminal);
-        term.writeln(ctx`{blueBright Hello, World!}`);
       }
     });
   },
