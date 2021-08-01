@@ -52,7 +52,8 @@ export default defineComponent({
       });
       const terminal = document.getElementById('terminal');
       if (terminal !== null) {
-        term.loadWebfontAndOpen(terminal);
+        var tmp: any = term; // loadWebfontAndOpen doesn't exist on the interface
+        tmp.loadWebfontAndOpen(terminal);
         window.addEventListener('resize', function () {
           fitAddon.fit();
         });
