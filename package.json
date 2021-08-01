@@ -67,6 +67,7 @@
     "usb-detection": "^4.10.0",
     "vue": "^3.0.5",
     "xterm": "^4.13.0",
+    "xterm-addon-fit": "^0.5.0",
     "xterm-webfont": "^2.0.0"
   },
   "devDependencies": {

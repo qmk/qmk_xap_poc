@@ -7,9 +7,6 @@
       class="tab tab-bordered"
       :class="{ 'tab-active': tab.active }"
       >{{ tab.displayText }}
-      <div v-if="tab.hasCount" class="indicator-item badge">
-        {{ tab.count }}
-      </div>
     </a>
   </div>
 </template>
@@ -39,6 +36,7 @@ export default defineComponent({
 
 <style scoped>
 #navbar {
+  flex: 0 1 auto;
   margin-bottom: 0.6em;
 }
 </style>

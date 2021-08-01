@@ -3,11 +3,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import XapClient from "./components/XapClient.vue";
+import { defineComponent } from 'vue';
+import XapClient from './components/XapClient.vue';
 
 export default defineComponent({
-  name: "App",
+  name: 'App',
   components: {
     XapClient,
   },
@@ -15,9 +15,22 @@ export default defineComponent({
 </script>
 
 <style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  padding: 0.6em;
+  width: 100%;
+  height: 100%;
 }
 </style>

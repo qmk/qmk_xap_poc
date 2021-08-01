@@ -1,9 +1,8 @@
 <template>
-  <NavBar :configs="tabconfigs" @tab-change-event="updateTabConfigs" />
-  <button class="btn btn-primary" @click="count++">
-    count is: {{ count }}
-  </button>
-  <HidListen />
+  <div id="xap-client">
+    <NavBar :configs="tabconfigs" @tab-change-event="updateTabConfigs" />
+    <HidListen />
+  </div>
 </template>
 
 <script lang="ts">
@@ -13,11 +12,10 @@ import HidListen from './HidListen.vue';
 export default defineComponent({
   name: 'XapClient',
   setup: () => {
-    const count = ref(0);
     const tabconfigs = ref([
       { displayText: 'Firmware Flashing', hasCount: false },
       { displayText: 'Keymap Configuration', hasCount: false },
-      { displayText: 'Console Output', hasCount: true, count, active: true },
+      { displayText: 'Console Output', hasCount: true, active: true },
     ] as Array<TabConfig>);
 
     function updateTabConfigs(index: number) {
@@ -28,7 +26,7 @@ export default defineComponent({
       tabconfigs.value[index].active = true;
     }
 
-    return { count, tabconfigs, updateTabConfigs };
+    return { tabconfigs, updateTabConfigs };
   },
   components: {
     NavBar,
@@ -36,3 +34,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+#xap-client {
+  display: flex;
+  flex-flow: column;
+  width: 100%;
+  height: 100%;
+}
+</style>
