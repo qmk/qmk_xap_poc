@@ -1,0 +1,66 @@
+name: Build/release
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches:
+      - main
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Extend network timeout
+        run: yarn config set network-timeout 300000
+
+      - name: Setup Ubuntu dependencies
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          sudo apt update
+          sudo apt install libudev-dev libusb-1.0-0-dev
+
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1.6.0
+        with:
+          build_script_name: 'build:for:electron'
+          # GitHub token, automatically provided to the action
+          # (No need to define this secret in the repo settings)
+          github_token: ${{ secrets.github_token }}
+
+      - name: 'Upload macOS artifact'
+        if: ${{ matrix.os == 'macos-latest' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: QMK-XAP_macOS.dmg.zip
+          path: dist_electron/QMK XAP*.dmg
+
+      - name: 'Upload Linux artifact'
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: QMK-XAP_Linux.AppImage.zip
+          path: dist_electron/QMK XAP*.AppImage
+
+      - name: 'Upload Windows artifact'
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: QMK-XAP_Windows.exe.zip
+          path: dist_electron/QMK XAP*.exe
