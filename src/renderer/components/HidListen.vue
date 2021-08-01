@@ -24,7 +24,7 @@ export default defineComponent({
           console.log(event);
           connects.value++;
           const str = `${event.device.manufacturer} ${event.device.product}: connected`;
-          term.writeln(ctx.blueBright(str));
+          term.writeln(ctx`{blueBright ${str}}`);
         }
       );
       window.ipc.answerMain(
@@ -33,18 +33,18 @@ export default defineComponent({
           console.log(event);
           disconnects.value++;
           const str = `${event.device.manufacturer} ${event.device.product}: disconnected`;
-          term.writeln(ctx.blueBright(str));
+          term.writeln(ctx`{blueBright ${str}`);
         }
       );
       window.ipc.answerMain('hid_listen-text', (event: HidListenTextEvent) => {
         console.log(event);
         const str = `${event.device.manufacturer} ${event.device.product}: ${event.text}`;
-        term.writeln(ctx.blueBright(str));
+        term.writeln(ctx`{blueBright ${str}}`);
       });
       const terminal = document.getElementById('terminal');
       if (terminal !== null) {
         term.open(terminal);
-        term.writeln(`${ctx.blueBright('Hello, World!')}`);
+        term.writeln(ctx`{blueBright Hello, World!}`);
       }
     });
   },
