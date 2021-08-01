@@ -6,6 +6,7 @@
 import { defineComponent, ref, Ref, onMounted } from 'vue';
 import { ITerminalOptions, Terminal } from 'xterm';
 import 'xterm/css/xterm.css';
+import chalk from 'chalk';
 export default defineComponent({
   name: 'HidListen',
   setup() {
@@ -15,15 +16,15 @@ export default defineComponent({
       cols: 90,
       scrollback: 500,
     } as ITerminalOptions);
+    const ctx = new chalk.Instance({ level: 2 });
     onMounted(() => {
       window.ipc.answerMain(
         'hid_listen-connect',
         (event: HidConnectionEvent) => {
           console.log(event);
           connects.value++;
-          term.writeln(
-            `\x1B[1;34m${event.device.manufacturer} ${event.device.product}: connected\x1B[0m`
-          );
+          const str = `${event.device.manufacturer} ${event.device.product}: connected`;
+          term.writeln(ctx.blueBright(str));
         }
       );
       window.ipc.answerMain(
@@ -31,21 +32,19 @@ export default defineComponent({
         (event: HidConnectionEvent) => {
           console.log(event);
           disconnects.value++;
-          term.writeln(
-            `\x1B[1;34m${event.device.manufacturer} ${event.device.product}: disconnected\x1B[0m`
-          );
+          const str = `${event.device.manufacturer} ${event.device.product}: disconnected`;
+          term.writeln(ctx.blueBright(str));
         }
       );
       window.ipc.answerMain('hid_listen-text', (event: HidListenTextEvent) => {
         console.log(event);
-        term.writeln(
-          `${event.device.manufacturer} ${event.device.product}: ${event.text}`
-        );
+        const str = `${event.device.manufacturer} ${event.device.product}: ${event.text}`;
+        term.writeln(ctx.blueBright(str));
       });
       const terminal = document.getElementById('terminal');
       if (terminal !== null) {
         term.open(terminal);
-        term.write('Hello, World!\r\n');
+        term.writeln(`${ctx.blueBright('Hello, World!')}`);
       }
     });
   },
