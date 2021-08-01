@@ -1,4 +1,4 @@
-const HIDDevices = require('./hid-devices');
+const hiddevices = require('./hid-devices');
 const EventEmitter = require('events').EventEmitter;
 
 class HIDListen extends EventEmitter {
@@ -9,7 +9,7 @@ class HIDListen extends EventEmitter {
   constructor(hid_devices) {
     super();
     var me = this;
-    this.hid_listen = HIDDevices.DeviceFilter(hid_devices, 0xff31, 0x74, true);
+    this.hid_listen = hiddevices.DeviceFilter(hid_devices, 0xff31, 0x74, true);
     this.hid_listen.on('connect', this._onConnect.bind(this));
     this.hid_listen.on('disconnect', this._onDisconnect.bind(this));
     this.hid_listen.on('data', function (device, data) {
