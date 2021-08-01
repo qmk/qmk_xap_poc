@@ -1,65 +1,50 @@
 <template>
-  <div ref="terminal" id="terminal"></div>
+  <div id="terminal"></div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, onMounted } from 'vue';
-import { ITerminalOptions, Terminal } from 'xterm';
-import XtermWebfont from 'xterm-webfont';
-import { FitAddon } from 'xterm-addon-fit';
-import 'xterm/css/xterm.css';
-import chalk from 'chalk';
+import { defineComponent, ref, onMounted } from 'vue';
+
+import { term, chalk, initTerminal } from './console';
 
 export default defineComponent({
   name: 'HidListen',
   setup() {
     const connects = ref(0);
     const disconnects = ref(0);
-    const term = new Terminal({
-      cols: 90,
-      scrollback: 500,
-      fontFamily: 'Iosevka Fixed Web',
-      fontSize: 10,
-      lineHeight: 1.5,
-    } as ITerminalOptions);
-    const fitAddon = new FitAddon();
-    term.loadAddon(fitAddon);
-    term.loadAddon(new XtermWebfont());
-    const ctx = new chalk.Instance({ level: 2 });
     onMounted(() => {
       window.ipc.answerMain(
         'hid_listen-connect',
         (event: HidConnectionEvent) => {
           console.log(event);
+          const str = chalk`{blueBright ${event.device.manufacturer} ${event.device.product}: connected}`;
+          term.writeln(str);
           connects.value++;
-          const str = `${event.device.manufacturer} ${event.device.product}: connected`;
-          term.writeln(ctx`{blueBright ${str}}`);
         }
       );
       window.ipc.answerMain(
         'hid_listen-disconnect',
         (event: HidConnectionEvent) => {
           console.log(event);
+          const str = chalk`{blueBright ${event.device.manufacturer} ${event.device.product}: disconnected}`;
+          term.writeln(str);
           disconnects.value++;
-          const str = `${event.device.manufacturer} ${event.device.product}: disconnected`;
-          term.writeln(ctx`{blueBright ${str}}`);
         }
       );
       window.ipc.answerMain('hid_listen-text', (event: HidListenTextEvent) => {
         console.log(event);
-        const str = `${event.device.manufacturer} ${event.device.product}: ${event.text}`;
+        const str = chalk`{blueBright ${event.device.manufacturer} ${event.device.product}: ${event.text}}`;
         term.writeln(str);
       });
-      const terminal = document.getElementById('terminal');
-      if (terminal !== null) {
-        var tmp: any = term; // loadWebfontAndOpen doesn't exist on the interface
-        tmp.loadWebfontAndOpen(terminal);
-        window.addEventListener('resize', function () {
-          this.setTimeout(() => fitAddon.fit(), 10);
-          fitAddon.fit();
-        });
-        setTimeout(() => fitAddon.fit(), 10);
-        fitAddon.fit();
+      const id = 'terminal';
+      const terminalEl = document.getElementById(id);
+      if (terminalEl === null) {
+        console.error(
+          chalk`{redBright.bold.bgGreen XAP: xterm not initialized. unable to find element id ${id}}`
+        );
+      } else {
+        initTerminal(terminalEl);
+        term.writeln(chalk`{greenBright QMK XAP console initialized}`);
       }
     });
   },
