@@ -58,6 +58,7 @@ export default defineComponent({
           this.setTimeout(() => fitAddon.fit(), 10);
           fitAddon.fit();
         });
+        setTimeout(() => fitAddon.fit(), 10);
         fitAddon.fit();
       }
     });
