@@ -15,9 +15,6 @@ export default defineComponent({
     const term = new Terminal({
       cols: 90,
       scrollback: 500,
-      fontFamily: 'Iosevka Fixed Web',
-      fontSize: 12,
-      lineHeight: 1.5,
     } as ITerminalOptions);
     const ctx = new chalk.Instance({ level: 2 });
     onMounted(() => {
