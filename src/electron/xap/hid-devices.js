@@ -1,15 +1,16 @@
 const EventEmitter = require('events').EventEmitter;
-const usbDetect = require('usb-detection');
 const HIDW = require('./node-hid-wrapper');
 
 class HIDDevices extends EventEmitter {
   /**
    *
+   * @param {any} usbDetect
    * @param {number} maxProbeCount
    * @param {number} probeDelay
    */
-  constructor(maxProbeCount = 10, probeDelay = 100) {
+  constructor(usbDetect, maxProbeCount = 10, probeDelay = 100) {
     super();
+    this.usbDetect = usbDetect;
     this.started = false;
     this.maxProbeCount = maxProbeCount;
     this.probeDelay = probeDelay;
@@ -25,16 +26,15 @@ class HIDDevices extends EventEmitter {
     // Do a first-pass so that we get all the currently-connected devices.
     this._detectDevices(0);
 
-    // Kick off monitoring.
-    usbDetect.startMonitoring();
-
     // Need to manually handle device connect/disconnect -- the data coming
     // out of usb-detection doesn't enough compared to node-hid.
     // We use node-usb-detection just to work out when a change is made,
     // then kick off the node-hid device discovery over a period of time.
     var me = this;
-    usbDetect.on('change', function () {
-      me._onDevicesChanged();
+    me.usbDetect.on('change', function () {
+      try {
+        me._onDevicesChanged();
+      } catch {}
     });
   }
 
@@ -42,8 +42,6 @@ class HIDDevices extends EventEmitter {
     if (this.started === false) {
       return;
     }
-
-    usbDetect.stopMonitoring();
 
     var me = this;
 
@@ -212,12 +210,13 @@ class HIDDeviceFilter extends EventEmitter {
 
 /**
  * Create a HIDDevices object
+ * @param {any} usbDetect
  * @param {number} maxProbeCount
  * @param {number} probeDelay
  * @returns HIDDevices
  */
-function Create(maxProbeCount = 10, probeDelay = 100) {
-  return new HIDDevices(maxProbeCount, probeDelay);
+function Create(usbDetect, maxProbeCount = 10, probeDelay = 100) {
+  return new HIDDevices(usbDetect, maxProbeCount, probeDelay);
 }
 
 /**

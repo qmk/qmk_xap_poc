@@ -63,6 +63,7 @@
     "electron-better-ipc": "^2.0.1",
     "electron-window-state": "^5.0.3",
     "node-hid": "^2.1.1",
+    "sprintf-js": "^1.1.2",
     "usb-detection": "^4.10.0",
     "vue": "^3.0.5",
     "xterm": "^4.13.0",

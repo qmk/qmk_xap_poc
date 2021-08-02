@@ -8,6 +8,7 @@ try {
   require('electron-reloader')(module);
 } catch {}
 
+const usb_detect = require('usb-detection');
 const HIDDevices = require('./xap/hid-devices');
 const HIDListen = require('./xap/hid-listen');
 let mainWindow;
@@ -22,33 +23,60 @@ const isDev = process.env.IS_DEV == 'true' ? true : false;
 // Start crappy implementation of hid_listen
 ///////////
 
-const hid_devices = HIDDevices.Create();
+usb_detect.startMonitoring();
 app.on('will-quit', () => {
+  usb_detect.stopMonitoring();
   hid_devices.stop();
+});
+
+const hid_devices = HIDDevices.Create(usb_detect);
+
+usb_detect.on('add', async (d) => {
+  try {
+    await ipcMain.callRenderer(mainWindow, 'usb_detect-connect', {
+      device: d,
+      timestamp: new Date(),
+    });
+  } catch {}
+});
+
+usb_detect.on('remove', async (d) => {
+  try {
+    await ipcMain.callRenderer(mainWindow, 'usb_detect-disconnect', {
+      device: d,
+      timestamp: new Date(),
+    });
+  } catch {}
 });
 
 const hid_listen = HIDListen(hid_devices);
 
-hid_listen.on('connect', function (d) {
-  ipcMain.callRenderer(mainWindow, 'hid_listen-connect', {
-    device: d,
-    timestamp: new Date(),
-  });
+hid_listen.on('connect', async (d) => {
+  try {
+    await ipcMain.callRenderer(mainWindow, 'hid_listen-connect', {
+      device: d,
+      timestamp: new Date(),
+    });
+  } catch {}
 });
 
-hid_listen.on('disconnect', function (d) {
-  ipcMain.callRenderer(mainWindow, 'hid_listen-disconnect', {
-    device: d,
-    timestamp: new Date(),
-  });
+hid_listen.on('disconnect', async (d) => {
+  try {
+    await ipcMain.callRenderer(mainWindow, 'hid_listen-disconnect', {
+      device: d,
+      timestamp: new Date(),
+    });
+  } catch {}
 });
 
-hid_listen.on('text', function (d, text) {
-  ipcMain.callRenderer(mainWindow, 'hid_listen-text', {
-    device: d,
-    timestamp: new Date(),
-    text: text,
-  });
+hid_listen.on('text', async (d, text) => {
+  try {
+    await ipcMain.callRenderer(mainWindow, 'hid_listen-text', {
+      device: d,
+      timestamp: new Date(),
+      text: text,
+    });
+  } catch {}
 });
 
 ///////////
@@ -87,11 +115,19 @@ function createWindow() {
 
   // and load the index.html of the app.
   // win.loadFile("index.html");
-  mainWindow.loadURL(isDev ? 'http://localhost:3000' : 'app://./index.html');
+  let loaded = mainWindow.loadURL(
+    isDev ? 'http://localhost:3000' : 'app://./index.html'
+  );
+
   // Open the DevTools.
   if (isDev) {
     mainWindow.webContents.openDevTools();
   }
+
+  // Start monitoring USB events
+  loaded.then(() => {
+    hid_devices.start();
+  });
 }
 
 // This method will be called when Electron has finished
@@ -99,7 +135,6 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
-  hid_devices.start();
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

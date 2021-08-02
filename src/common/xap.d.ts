@@ -1,3 +1,10 @@
+import { Device } from 'usb-detection';
+
+interface UsbConnectionEvent {
+  device: Device;
+  timestamp: Date;
+}
+
 interface HidDeviceInfo {
   interface: number;
   manufacturer: string;
