@@ -1,6 +1,6 @@
 import { ITerminalOptions, Terminal } from 'xterm';
 import { nextTick } from 'vue';
-import * as XtermWebfont from 'xterm-webfont';
+import XtermWebfont from 'xterm-webfont';
 import { FitAddon } from 'xterm-addon-fit';
 import 'xterm/css/xterm.css';
 import chalk_ from 'chalk';
@@ -21,13 +21,14 @@ export const term = new Terminal({
 } as ITerminalOptions);
 
 const fitAddon = new FitAddon();
+const webFont = new XtermWebfont();
 export function resizeWindow() {
   nextTick(() => {
     fitAddon.fit();
   });
 }
 term.loadAddon(fitAddon);
-term.loadAddon(new XtermWebfont());
+term.loadAddon(webFont);
 
 export const chalk = new chalk_.Instance({ level: 2 });
 export function initTerminal(el: HTMLElement): Terminal {
