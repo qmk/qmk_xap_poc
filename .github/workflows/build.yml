@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-10.15, ubuntu-18.04, windows-2016]
 
     steps:
       - name: Check out Git repository
@@ -31,7 +31,7 @@ jobs:
         run: yarn config set network-timeout 300000
 
       - name: Setup Ubuntu dependencies
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ startsWith(matrix.os, 'ubuntu-') }}
         run: |
           sudo apt update
           sudo apt install libudev-dev libusb-1.0-0-dev
@@ -51,7 +51,7 @@ jobs:
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
 
       - name: 'Upload macOS artifact'
-        if: ${{ matrix.os == 'macos-latest' }}
+        if: ${{ startsWith(matrix.os, 'macos-') }}
         uses: actions/upload-artifact@v2
         with:
           name: QMK-XAP_macOS.dmg.zip
@@ -59,7 +59,7 @@ jobs:
           if-no-files-found: error
 
       - name: 'Upload Linux artifact'
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ startsWith(matrix.os, 'ubuntu-') }}
         uses: actions/upload-artifact@v2
         with:
           name: QMK-XAP_Linux.AppImage.zip
@@ -67,7 +67,7 @@ jobs:
           if-no-files-found: error
 
       - name: 'Upload Windows artifact'
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: ${{ startsWith(matrix.os, 'windows-') }}
         uses: actions/upload-artifact@v2
         with:
           name: QMK-XAP_Windows.exe.zip
