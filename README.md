@@ -60,3 +60,22 @@ Pushes to the repository will generate builds through GitHub Actions -- with app
       sudo sysctl kernel.unprivileged_userns_clone=1
       ```
       See [here](https://chromium.googlesource.com/chromium/src/+/master/docs/linux_suid_sandbox_development.md), [here](https://wiki.archlinux.org/index.php/Linux_Containers#Enable_support_to_run_unprivileged_containers_(optional)), [here](https://bugs.launchpad.net/snapd/+bug/1914786), [here](https://github.com/Revolutionary-Games/Thrive/issues/749).
+
+      To permanently make this change, you can run the following:
+      ```sh
+      # Enable unprivileged user namespaces
+      echo 'kernel.unprivileged_userns_clone = 1' | sudo tee /etc/sysctl.d/00-local-userns.conf
+      sudo chmod 644 /etc/sysctl.d/00-local-userns.conf
+      ```
+
+    * Access to `/dev/hidraw*` may fail due to permissions. If you're using `udev` for managing hotpluggable device permissions, you can set up permanent rules to add access:
+      ```sh
+      # Add yourself to the `plugdev` group
+      sudo usermod -aG plugdev $USER
+      newgrp plugdev
+      id
+      # Add a new udev rule for hidraw device nodes:
+      echo 'KERNEL=="hidraw*", SUBSYSTEM=="hidraw", MODE="0664", GROUP="plugdev"' | sudo tee /etc/udev/rules.d/99-hidraw-permissions.rules
+      sudo chmod 644 /etc/udev/rules.d/99-hidraw-permissions.rules
+      sudo udevadm control --reload-rules && sudo udevadm trigger
+      ```
