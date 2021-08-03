@@ -5,3 +5,4 @@ dist_electron
 dist-ssr
 *.local
 yarn-error.log
+*.sw[op]
