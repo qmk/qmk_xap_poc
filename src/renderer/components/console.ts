@@ -33,7 +33,7 @@ term.loadAddon(webFont);
 export const chalk = new chalk_.Instance({ level: 2 });
 export function initTerminal(el: HTMLElement): Terminal {
   try {
-    (term as any).loadWebfontAndOpen(el);
+    term.loadWebfontAndOpen(el);
     window.addEventListener('resize', resizeWindow);
     resizeWindow();
     return term;
