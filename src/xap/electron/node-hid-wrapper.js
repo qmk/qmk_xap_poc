@@ -7,9 +7,7 @@ HID.devices = new Proxy(HID.devices, {
     if (process.platform === 'linux') {
       devices.forEach((d) => {
         if (!d.usagePage || !d.usage) {
-          const hidraw = `/sys/class/hidraw/${path.basename(
-            d.path
-          )}/device/report_descriptor`;
+          const hidraw = `/sys/class/hidraw/${path.basename(d.path)}/device/report_descriptor`;
           if (fs.existsSync(hidraw)) {
             const report = fs.readFileSync(hidraw);
 

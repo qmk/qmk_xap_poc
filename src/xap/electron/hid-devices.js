@@ -1,4 +1,4 @@
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const HIDW = require('./node-hid-wrapper');
 
 class HIDDevices extends EventEmitter {

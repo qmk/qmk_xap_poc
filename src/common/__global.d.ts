@@ -1,3 +1,5 @@
+import XapRenderer from '../xap/xap';
+
 declare global {
   interface BetterIpcRenderer {
     answerMain: (channel: string, callback: (data: any) => any) => Promise<any>;
@@ -6,6 +8,7 @@ declare global {
 
   interface Window {
     ipc: BetterIpcRenderer;
+    xap: XapRenderer;
   }
 }
 

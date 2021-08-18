@@ -1,11 +1,6 @@
 <template>
   <div class="tabs" id="navbar">
-    <a
-      @click="$emit('tabChangeEvent', index)"
-      v-for="(tab, index) in tabs"
-      :key="index"
-      class="tab tab-bordered"
-      :class="{ 'tab-active': tab.active }"
+    <a @click="$emit('tabChangeEvent', index)" v-for="(tab, index) in tabs" :key="index" class="tab tab-bordered" :class="{ 'tab-active': tab.active }"
       >{{ tab.displayText }}
     </a>
   </div>

@@ -2,86 +2,17 @@
 const path = require('path');
 const { app, protocol, BrowserWindow } = require('electron');
 const windowStateKeeper = require('electron-window-state');
-const { ipcMain } = require('electron-better-ipc');
+const { xapElectron } = require('../xap/xap');
 
 try {
   require('electron-reloader')(module);
 } catch {}
 
-const usb_detect = require('usb-detection');
-const HIDDevices = require('./xap/hid-devices');
-const HIDListen = require('./xap/hid-listen');
 let mainWindow;
 
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } },
-]);
+protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 
 const isDev = process.env.IS_DEV == 'true' ? true : false;
-
-///////////
-// Start crappy implementation of hid_listen
-///////////
-
-usb_detect.startMonitoring();
-app.on('will-quit', () => {
-  usb_detect.stopMonitoring();
-  hid_devices.stop();
-});
-
-const hid_devices = HIDDevices.Create(usb_detect);
-
-usb_detect.on('add', async (d) => {
-  try {
-    await ipcMain.callRenderer(mainWindow, 'usb_detect-connect', {
-      device: d,
-      timestamp: new Date(),
-    });
-  } catch {}
-});
-
-usb_detect.on('remove', async (d) => {
-  try {
-    await ipcMain.callRenderer(mainWindow, 'usb_detect-disconnect', {
-      device: d,
-      timestamp: new Date(),
-    });
-  } catch {}
-});
-
-const hid_listen = HIDListen(hid_devices);
-
-hid_listen.on('connect', async (d) => {
-  try {
-    await ipcMain.callRenderer(mainWindow, 'hid_listen-connect', {
-      device: d,
-      timestamp: new Date(),
-    });
-  } catch {}
-});
-
-hid_listen.on('disconnect', async (d) => {
-  try {
-    await ipcMain.callRenderer(mainWindow, 'hid_listen-disconnect', {
-      device: d,
-      timestamp: new Date(),
-    });
-  } catch {}
-});
-
-hid_listen.on('text', async (d, text) => {
-  try {
-    await ipcMain.callRenderer(mainWindow, 'hid_listen-text', {
-      device: d,
-      timestamp: new Date(),
-      text: text,
-    });
-  } catch {}
-});
-
-///////////
-// End crappy implementation of hid_listen
-///////////
 
 function createWindow() {
   protocol.registerFileProtocol('app', (request, callback) => {
@@ -115,9 +46,7 @@ function createWindow() {
 
   // and load the index.html of the app.
   // win.loadFile("index.html");
-  let loaded = mainWindow.loadURL(
-    isDev ? 'http://localhost:3000' : 'app://./index.html'
-  );
+  let loaded = mainWindow.loadURL(isDev ? 'http://localhost:3000' : 'app://./index.html');
 
   // Open the DevTools.
   if (isDev) {
@@ -126,7 +55,7 @@ function createWindow() {
 
   // Start monitoring USB events
   loaded.then(() => {
-    hid_devices.start();
+    xapElectron.attach(mainWindow);
   });
 }
 

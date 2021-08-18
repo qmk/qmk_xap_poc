@@ -14,9 +14,7 @@ export default defineComponent({
       const id = 'terminal';
       const terminalEl = document.getElementById(id);
       if (terminalEl === null) {
-        console.error(
-          chalk`{redBright.bold.bgGreen XAP: xterm not initialized. unable to find element id ${id}}`
-        );
+        console.error(chalk`{redBright.bold.bgGreen XAP: xterm not initialized. unable to find element id ${id}}`);
       } else {
         initTerminal(terminalEl);
         resizeWindow();
