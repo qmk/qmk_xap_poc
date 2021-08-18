@@ -4,7 +4,6 @@ const { ipcMain } = require('electron-better-ipc');
 
 const usb_detect = require('usb-detection');
 const HIDDevices = require('./hid-devices');
-const HIDListen = require('./hid-listen');
 
 function usbDetectDeviceToXapDevice(device) {
   return {

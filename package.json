@@ -38,7 +38,8 @@
     "files": [
       "dist/**/*",
       "src/electron/**/*",
-      "src/preload/**/*"
+      "src/preload/**/*",
+      "src/xap/**/*"
     ],
     "directories": {
       "buildResources": "assets",

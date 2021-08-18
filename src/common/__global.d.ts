@@ -1,4 +1,4 @@
-import XapRenderer from '../xap/xap';
+import { XapRenderer } from '../xap/xap';
 
 declare global {
   interface BetterIpcRenderer {

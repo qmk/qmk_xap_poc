@@ -1,12 +1,12 @@
 import { BrowserWindow } from 'electron';
 import { Device } from 'usb-detection';
 
-interface UsbConnectionEvent {
+export interface UsbConnectionEvent {
   device: Device;
   timestamp: Date;
 }
 
-interface HidDeviceInfo {
+export interface HidDeviceInfo {
   manufacturer: string;
   path: string;
   name: string;
@@ -16,7 +16,7 @@ interface HidDeviceInfo {
   vendorId: number;
 }
 
-interface HidDevice {
+export interface HidDevice {
   info: HidDeviceInfo;
 }
 
@@ -25,48 +25,46 @@ interface HidConnectionEvent {
   timestamp: Date;
 }
 
-interface HidListenTextEvent {
+export interface HidListenTextEvent {
   device: HidDeviceInfo;
   timestamp: Date;
   text: string;
 }
 
-interface XapConnectionEvent {
+export interface XapConnectionEvent {
   device: HidDeviceInfo;
   timestamp: Date;
 }
 
-interface XapTextEvent {
+export interface XapTextEvent {
   device: HidDeviceInfo;
   timestamp: Date;
   text: string;
 }
 
-interface XapDataEvent {
+export interface XapDataEvent {
   device: HidDeviceInfo;
   timestamp: Date;
   data: Buffer;
 }
 
-declare module 'xap' {
-  export class XapElectron {
-    public attach(window: BrowserWindow): void;
-  }
+export interface XapElectron {
+  attach(window: BrowserWindow): void;
+}
 
-  export class XapRenderer {
-    public attach(): void;
+export interface XapRenderer {
+  attach(): void;
 
-    public send(device: HidDeviceInfo, data: Buffer): Promise<void>;
+  send(device: HidDeviceInfo, data: Buffer): Promise<void>;
 
-    public onUsbConnect(callback: (data: XapConnectionEvent) => Promise<void>): Promise<void>;
-    public onUsbDisconnect(callback: (data: XapConnectionEvent) => Promise<void>): Promise<void>;
+  onUsbConnect(callback: (data: XapConnectionEvent) => Promise<void>): Promise<void>;
+  onUsbDisconnect(callback: (data: XapConnectionEvent) => Promise<void>): Promise<void>;
 
-    public onConsoleConnect(callback: (data: XapConnectionEvent) => Promise<void>): Promise<void>;
-    public onConsoleDisconnect(callback: (data: XapConnectionEvent) => Promise<void>): Promise<void>;
-    public onConsoleText(callback: (data: XapTextEvent) => Promise<void>): Promise<void>;
+  onConsoleConnect(callback: (data: XapConnectionEvent) => Promise<void>): Promise<void>;
+  onConsoleDisconnect(callback: (data: XapConnectionEvent) => Promise<void>): Promise<void>;
+  onConsoleText(callback: (data: XapTextEvent) => Promise<void>): Promise<void>;
 
-    public onXapConnect(callback: (data: XapConnectionEvent) => Promise<void>): Promise<void>;
-    public onXapDisconnect(callback: (data: XapConnectionEvent) => Promise<void>): Promise<void>;
-    public onXapData(callback: (data: XapDataEvent) => Promise<void>): Promise<void>;
-  }
+  onXapConnect(callback: (data: XapConnectionEvent) => Promise<void>): Promise<void>;
+  onXapDisconnect(callback: (data: XapConnectionEvent) => Promise<void>): Promise<void>;
+  onXapData(callback: (data: XapDataEvent) => Promise<void>): Promise<void>;
 }

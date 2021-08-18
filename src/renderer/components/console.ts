@@ -46,49 +46,49 @@ function deviceStr(device: HidDeviceInfo): string {
   return sprintf('[%04X:%04X] %s %s', device.vendorId, device.productId, device.manufacturer, device.name);
 }
 
-window.xap.onUsbConnect((event: XapConnectionEvent) => {
+window.xap.onUsbConnect(async (event: XapConnectionEvent) => {
   console.log(event);
   const str = chalk`{cyanBright ${timeStr(event.timestamp)} *** ${deviceStr(event.device)}: USB device connected}`;
   term.writeln(str);
 });
 
-window.xap.onUsbDisconnect((event: XapConnectionEvent) => {
+window.xap.onUsbDisconnect(async (event: XapConnectionEvent) => {
   console.log(event);
   const str = chalk`{cyanBright ${timeStr(event.timestamp)} *** ${deviceStr(event.device)}: USB device disconnected}`;
   term.writeln(str);
 });
 
-window.xap.onConsoleConnect((event: XapConnectionEvent) => {
+window.xap.onConsoleConnect(async (event: XapConnectionEvent) => {
   console.log(event);
   const str = chalk`{blueBright ${timeStr(event.timestamp)} *** ${event.device.manufacturer} ${event.device.name}: console connected}`;
   term.writeln(str);
 });
 
-window.xap.onConsoleDisconnect((event: XapConnectionEvent) => {
+window.xap.onConsoleDisconnect(async (event: XapConnectionEvent) => {
   console.log(event);
   const str = chalk`{blueBright ${timeStr(event.timestamp)} *** ${event.device.manufacturer} ${event.device.name}: console disconnected}`;
   term.writeln(str);
 });
 
-window.xap.onConsoleText((event: XapTextEvent) => {
+window.xap.onConsoleText(async (event: XapTextEvent) => {
   console.log(event);
   const str = chalk`{blueBright ${timeStr(event.timestamp)}   > ${event.device.manufacturer} ${event.device.name}: ${event.text}}`;
   term.writeln(str);
 });
 
-window.xap.onXapConnect((event: XapConnectionEvent) => {
+window.xap.onXapConnect(async (event: XapConnectionEvent) => {
   console.log(event);
   const str = chalk`{magentaBright ${timeStr(event.timestamp)} *** ${event.device.manufacturer} ${event.device.name}: XAP connected}`;
   term.writeln(str);
 });
 
-window.xap.onXapDisconnect((event: XapConnectionEvent) => {
+window.xap.onXapDisconnect(async (event: XapConnectionEvent) => {
   console.log(event);
   const str = chalk`{magentaBright ${timeStr(event.timestamp)} *** ${event.device.manufacturer} ${event.device.name}: XAP disconnected}`;
   term.writeln(str);
 });
 
-window.xap.onXapData((event: XapDataEvent) => {
+window.xap.onXapData(async (event: XapDataEvent) => {
   console.log(event);
   const str = chalk`{magentaBright ${timeStr(event.timestamp)}   > ${event.device.manufacturer} ${event.device.name}: ${event.data}}`;
   term.writeln(str);
